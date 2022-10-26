@@ -1,7 +1,7 @@
 using System;
 
 
-namespace R5T.F0063
+namespace R5T.F0063.F001
 {
 	public class SolutionFolderNames : ISolutionFolderNames
 	{

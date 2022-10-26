@@ -47,5 +47,35 @@ namespace R5T.F0063
 
 			return allRecursiveProjectReferences;
 		}
+
+		public async Task RemoveExtraneousDependencies(string solutionFilePath)
+        {
+			await Instances.SolutionFileOperator.InModifyContext(
+				solutionFilePath,
+				async (solutionFile, solutionFilePath) =>
+				{
+					// Get non-dependency project file paths.
+					var nonDependencyProjectFilePaths = Instances.SolutionFileOperator.Get_NonDependencyProjectReferenceFilePaths(solutionFile, solutionFilePath);
+
+					var allRecursiveProjectReferenceFilePaths = await Instances.ProjectReferencesOperator.GetAllRecursiveProjectReferences(
+						nonDependencyProjectFilePaths);
+
+					var allSolutionProjectFilePaths = Instances.SolutionFileOperator.Get_AllProjectReferenceFilePaths(solutionFile, solutionFilePath);
+
+					var extraneousProjectDependencyFilePaths = allSolutionProjectFilePaths
+						.Except(allRecursiveProjectReferenceFilePaths)
+						// Non-dependency project file paths are never extraneous.
+						.Except(nonDependencyProjectFilePaths)
+						.Now();
+
+                    foreach (var extraneousProjectDependencyFilePath in extraneousProjectDependencyFilePaths)
+                    {
+                        Instances.SolutionFileOperator.RemoveProject(
+							solutionFile,
+							solutionFilePath,
+							extraneousProjectDependencyFilePath);
+                    }
+				});
+		}
 	}
 }

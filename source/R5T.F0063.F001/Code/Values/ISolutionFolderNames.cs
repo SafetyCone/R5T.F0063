@@ -3,7 +3,7 @@ using System;
 using R5T.T0131;
 
 
-namespace R5T.F0063
+namespace R5T.F0063.F001
 {
 	[ValuesMarker]
 	public partial interface ISolutionFolderNames : IValuesMarker
