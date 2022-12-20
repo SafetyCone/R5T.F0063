@@ -10,6 +10,15 @@ namespace R5T.F0063
 	[FunctionalityMarker]
 	public partial interface ISolutionOperations : IFunctionalityMarker
 	{
+		/// <inheritdoc cref="AddMissingDependencies(string)"/>
+		public Task AddAllRecursiveProjectReferenceDependencies(string solutionFilePath)
+		{
+			return this.AddMissingDependencies(solutionFilePath);
+		}
+
+		/// <summary>
+		/// Adds all missing recursive dependencies of projects within the solution.
+		/// </summary>
 		public async Task AddMissingDependencies(string solutionFilePath)
         {
 			var missingDependencyProjectFilePaths = await this.GetMissingDependencies(solutionFilePath);
@@ -21,9 +30,9 @@ namespace R5T.F0063
         }
 
 		/// <summary>
-		/// Computes the project references missing from the solution that are referenced by projects in the solution.
+		/// Computes the recursive project references missing from the solution that are referenced by projects in the solution.
 		/// </summary>
-		/// <returns>Project file paths that are dependencies of projects in the solution that are missing from the solution.</returns>
+		/// <returns>Project file paths that are recursive dependencies of projects in the solution that are missing from the solution.</returns>
 		public async Task<string[]> GetMissingDependencies(string solutionFilePath)
         {
 			var projectReferenceFilePaths = Instances.SolutionFileOperator.Get_ProjectReferenceFilePaths(solutionFilePath);
